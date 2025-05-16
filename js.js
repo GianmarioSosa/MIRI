@@ -122,3 +122,71 @@ modalZoom.addEventListener('click', () => {
   modalZoom.classList.add('hidden');
   scale = 1;
 });
+
+// Sidebar toggle
+const menuBtn = document.getElementById('menu-button');
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('overlay');
+const closeSidebar = document.getElementById('close-sidebar');
+
+menuBtn.addEventListener('click', () => {
+  sidebar.classList.remove('-translate-x-full');
+  overlay.classList.remove('hidden');
+});
+
+overlay.addEventListener('click', () => {
+  sidebar.classList.add('-translate-x-full');
+  overlay.classList.add('hidden');
+});
+
+closeSidebar.addEventListener('click', () => {
+  sidebar.classList.add('-translate-x-full');
+  overlay.classList.add('hidden');
+});
+
+// Slider funcionalidad
+let currentIndex = 0;
+const slider = document.getElementById("slider");
+const images = slider.children;
+const total = images.length;
+
+document.getElementById("next").addEventListener("click", () => {
+  currentIndex = (currentIndex + 1) % total;
+  slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+});
+
+document.getElementById("prev").addEventListener("click", () => {
+  currentIndex = (currentIndex - 1 + total) % total;
+  slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+});
+
+// Contador tiempo juntos
+const fechaInicio = new Date("2024-01-01T00:00:00");
+
+function actualizarContador() {
+  const ahora = new Date();
+  const diferencia = ahora - fechaInicio;
+
+  const segundos = Math.floor(diferencia / 1000) % 60;
+  const minutos = Math.floor(diferencia / 1000 / 60) % 60;
+  const horas = Math.floor(diferencia / 1000 / 60 / 60) % 24;
+  const dias = Math.floor(diferencia / 1000 / 60 / 60 / 24);
+
+  document.getElementById("dias").textContent = dias;
+  document.getElementById("horas").textContent = horas;
+  document.getElementById("minutos").textContent = minutos;
+  document.getElementById("segundos").textContent = segundos;
+}
+setInterval(actualizarContador, 1000);
+
+// Zoom de imagen
+document.querySelectorAll('.zoomable').forEach(img => {
+  img.addEventListener('click', () => {
+    document.getElementById('zoomedImg').src = img.src;
+    document.getElementById('modalZoom').classList.remove('hidden');
+  });
+});
+
+document.getElementById('modalZoom').addEventListener('click', () => {
+  document.getElementById('modalZoom').classList.add('hidden');
+});

@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,13 +14,37 @@
   </style>
 </head>
 <body class="bg-[#e0e3e3]">
+
+  <!-- Botón del menú (esquina superior izquierda) -->
+  <button id="menu-button" class="fixed top-2 left-4 z-50 p-2 rounded-md bg-gray-100 shadow-md hover:bg-gray-200">
+    ☰
+  </button>
+
+<!-- Sidebar navbar oculto -->
+<div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-md transform -translate-x-full transition-transform duration-300 z-40">
+  <div class="p-4 border-b text-lg font-semibold text-center">Menú</div>
+  <nav class="flex flex-col p-4 space-y-4">
+    <a href="citas.html" class="hover:underline">Citas</a>
+    <a href="cartas.html" class="hover:underline">Cartas</a>
+    <a href="canciones.html" class="hover:underline">Canciones</a>
+    <a href="gifts.html" class="hover:underline">Gifts</a>
+    <button id="close-sidebar" class="mt-10 text-left text-sm text-gray-500 hover:text-gray-800">Cerrar ✖</button>
+  </nav>
+</div>
+
+  <!-- Overlay -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-30"></div>
+
+  <!-- Encabezado -->
   <header class="pt-2 text-center" role="banner">
     <h1 class="text-L font-semibold underline decoration-2">MIRI Y GIAN</h1>
   </header>
-  <section class="relative mt-5 flex justify-center">
+
+  <!-- Slider de imágenes -->
+  <section class="relative mt-7 flex justify-center">
     <div class="overflow-hidden aspect-[9/18] w-full max-w-[calc(100%-60px)] max-h-[600px] rounded-[10px]">
       <div id="slider" class="flex transition-transform duration-500 ease-in-out w-full h-full">
-        
+
         <div class="relative flex-shrink-0 w-full h-full">
           <img src="./WhatsApp Image 2025-05-02 at 11.15.55 AM (2).jpeg" alt="Image 1" class="w-full h-full object-cover" />
           <div class="absolute inset-0 bg-black opacity-50 rounded-[10px]"></div>
@@ -49,100 +73,72 @@
       </div>
     </div>
 
-    <!-- Botones de navegación -->
+    <!-- Botones del slider -->
     <button id="prev" class="absolute left-[40px] top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">❮</button>
     <button id="next" class="absolute right-[40px] top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">❯</button>
   </section>
-    <!-- Contador TIEMPO JUNTOS -->
-    <section id="contador-section" class="mt-20 text-center">
-      <h2 class="text-[15px] font-semibold mb-4">TIEMPO JUNTOS</h2>
-      <div id="contador" class="flex justify-center gap-5 text-center text-xl font-bold max-w-md mx-auto">
-        <div class="flex flex-col items-center justify-center">
-          <div id="dias" class="text-4xl">0</div>
-          <div class="text-base font-normal">DÍAS</div>
-        </div>
-        <div class="flex flex-col items-center justify-center">
-          <div id="horas" class="text-4xl">0</div>
-          <div class="text-base font-normal">HORAS</div>
-        </div>
-        <div class="flex flex-col items-center justify-center">
-          <div id="minutos" class="text-4xl">0</div>
-          <div class="text-base font-normal">MINUTOS</div>
-        </div>
-        <div class="flex flex-col items-center justify-center">
-          <div id="segundos" class="text-4xl">0</div>
-          <div class="text-base font-normal">SEGUNDOS</div>
-        </div>
+
+  <!-- Contador -->
+  <section id="contador-section" class="mt-20 text-center">
+    <h2 class="text-[15px] font-semibold mb-4">TIEMPO JUNTOS</h2>
+    <div id="contador" class="flex justify-center gap-5 text-center text-xl font-bold max-w-md mx-auto">
+      <div class="flex flex-col items-center justify-center">
+        <div id="dias" class="text-4xl">0</div>
+        <div class="text-base font-normal">DÍAS</div>
       </div>
-    </section>
-<!-- Sección DIBUJITOS -->
-<section class="mt-20 text-center">
-  <h2 class="text-[20px] font-semibold mb-6 underline">DIBUJITOS</h2>
-
-  <div class="flex flex-col items-center gap-[70px]">
-
-    <!-- Imagen para Gian -->
-    <div class="relative w-full max-w-xs">
-      <img src="./Competencias para el Aprendizaje del Inglés (1).jpg" alt="Dibujo para Gian" class="w-full rounded-md shadow-md cursor-pointer zoomable" data-image="ruta/a/imagen-gian.jpg">
-      <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
-        PARA GIAN
+      <div class="flex flex-col items-center justify-center">
+        <div id="horas" class="text-4xl">0</div>
+        <div class="text-base font-normal">HORAS</div>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <div id="minutos" class="text-4xl">0</div>
+        <div class="text-base font-normal">MINUTOS</div>
+      </div>
+      <div class="flex flex-col items-center justify-center">
+        <div id="segundos" class="text-4xl">0</div>
+        <div class="text-base font-normal">SEGUNDOS</div>
       </div>
     </div>
+  </section>
 
-    <!-- Imagen tipo slider para Miri -->
-    <div class="relative w-full max-w-xs">
-      <img id="sliderMiri" src="./2.jpg" alt="Dibujo para Miri" class="w-full rounded-md shadow-md cursor-pointer zoomable" data-image="ruta/a/imagen-miri1.jpg">
-      <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
-        PARA MIRI
+  <!-- Dibujitos -->
+  <section class="mt-20 text-center">
+    <h2 class="text-[20px] font-semibold mb-6 underline">DIBUJITOS</h2>
+
+    <div class="flex flex-col items-center gap-[70px]">
+      <div class="relative w-full max-w-xs">
+        <img src="./Competencias para el Aprendizaje del Inglés (1).jpg" alt="Dibujo para Gian" class="w-full rounded-md shadow-md cursor-pointer zoomable">
+        <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
+          PARA GIAN
+        </div>
+      </div>
+
+      <div class="relative w-full max-w-xs">
+        <img id="sliderMiri" src="./2.jpg" alt="Dibujo para Miri" class="w-full rounded-md shadow-md cursor-pointer zoomable">
+        <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
+          PARA MIRI
+        </div>
       </div>
     </div>
-  </div>
-</section>
-<!-- Modal para ver imagen grande -->
-<div id="modalZoom" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center">
-  <img id="zoomedImg" src="" class="max-w-full max-h-full object-contain transition-transform duration-300 ease-in-out" />
-</div>
-<!-- Sección de mensaje de amor -->
-<section class="mt-20 px-6 text-center">
-  <div class="max-w-xl mx-auto bg-gray-100 rounded-xl p-6 shadow-md hover:bg-pink-300">
-    <p class="text-lg font-medium text-gray-800 leading-relaxed">
-      Desde que llegaste a mi vida, todo tiene más sentido. <br />
-      Eres mi alegría diaria, mi paz y mi inspiración. <br />
-      Gracias por ser tú, por cada sonrisa, por cada momento compartido. <br />
-      Te amo con todo mi corazón, <span class="font-semibold">Miri</span>. <br /><br />
-      — Gian 💖
-    </p>
-  </div>
-</section>
+  </section>
 
-
-<!-- Sección de botones que redirigen -->
-<section class="mt-20 text-center">
-  <h2 class="text-[20px] font-semibold mb-6">MENÚ</h2>
-
-  <div class="flex flex-col items-center gap-2.5 pb-[20px]">
-    <a href="citas.html">
-      <button class="bg-gray-100 hover:bg-pink-300 text-black font-medium py-2 w-[280px] h-[45px] rounded-full shadow-md transition">
-        CITAS
-      </button>
-    </a>
-    <a href="cartas.html">
-      <button class="bg-gray-100 hover:bg-pink-300 text-black font-medium py-2 w-[280px] h-[45px] rounded-full shadow-md transition">
-        CARTAS
-      </button>
-    </a>
-    <a href="canciones.html">
-      <button class="bg-gray-100 hover:bg-pink-300 text-black font-medium py-2 w-[280px] h-[45px] rounded-full shadow-md transition">
-        CANCIONES
-      </button>
-    </a>
-    <a href="gifts.html">
-      <button class="bg-gray-100 hover:bg-pink-300 text-black font-medium pb-[10px] py-2 w-[280px] h-[45px] rounded-full shadow-md transition">
-        GIFTS
-      </button>
-    </a>
+  <!-- Modal Zoom -->
+  <div id="modalZoom" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center">
+    <img id="zoomedImg" src="" class="max-w-full max-h-full object-contain transition-transform duration-300 ease-in-out" />
   </div>
-</section>
+
+  <!-- Mensaje de amor -->
+  <section class="mt-20 mb-6 px-6 text-center">
+    <div class="max-w-xl mx-auto bg-gray-100 rounded-xl p-6 shadow-md">
+      <p class="text-lg font-medium text-gray-800 leading-relaxed">
+        Desde que llegaste a mi vida, todo tiene más sentido. <br />
+        Eres mi alegría diaria, mi paz y mi inspiración. <br />
+        Gracias por ser tú, por cada sonrisa, por cada momento compartido. <br />
+        Te amo con todo mi corazón, <span class="font-semibold">Miri</span>. <br /><br />
+        — Gian 💖
+      </p>
+    </div>
+  </section>
 
 </body>
 </html>
