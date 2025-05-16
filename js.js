@@ -75,3 +75,50 @@ document.addEventListener('DOMContentLoaded', () => {
   actualizarContador();
   setInterval(actualizarContador, 1000);
 });
+
+// Imagen tipo slider para Miri
+const imagenesMiri = [
+  "./2.jpg",
+  "./3.jpg",
+];
+
+let indexMiri = 0;
+const sliderMiri = document.getElementById("sliderMiri");
+
+sliderMiri.addEventListener("click", (e) => {
+  e.stopPropagation(); // evita que abra modal en clic normal
+  indexMiri = (indexMiri + 1) % imagenesMiri.length;
+  const nuevaImagen = imagenesMiri[indexMiri];
+  sliderMiri.src = nuevaImagen;
+  sliderMiri.setAttribute('data-image', nuevaImagen);
+});
+
+// Modal Zoom
+const modalZoom = document.getElementById('modalZoom');
+const zoomedImg = document.getElementById('zoomedImg');
+let scale = 1;
+
+// Hacer clic en cualquier .zoomable abre modal
+document.querySelectorAll('.zoomable').forEach(img => {
+  img.addEventListener('dblclick', () => {
+    const imageSrc = img.getAttribute('data-image') || img.src;
+    zoomedImg.src = imageSrc;
+    zoomedImg.style.transform = 'scale(1)';
+    scale = 1;
+    modalZoom.classList.remove('hidden');
+  });
+});
+
+// Zoom con rueda del mouse
+zoomedImg.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  scale += e.deltaY * -0.001;
+  scale = Math.min(Math.max(1, scale), 3); // entre 1x y 3x
+  zoomedImg.style.transform = `scale(${scale})`;
+});
+
+// Cerrar modal al hacer clic en fondo
+modalZoom.addEventListener('click', () => {
+  modalZoom.classList.add('hidden');
+  scale = 1;
+});

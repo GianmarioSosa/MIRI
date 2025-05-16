@@ -75,7 +75,33 @@
         </div>
       </div>
     </section>
-    
-  
+<!-- Sección DIBUJITOS -->
+<section class="mt-20 text-center">
+  <h2 class="text-[30px] font-semibold mb-6 underline">DIBUJITOS</h2>
+
+  <div class="flex flex-col items-center gap-[70px]">
+
+    <!-- Imagen para Gian -->
+    <div class="relative w-full max-w-xs">
+      <img src="./Competencias para el Aprendizaje del Inglés (1).jpg" alt="Dibujo para Gian" class="w-full rounded-md shadow-md cursor-pointer zoomable" data-image="ruta/a/imagen-gian.jpg">
+      <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
+        PARA GIAN
+      </div>
+    </div>
+
+    <!-- Imagen tipo slider para Miri -->
+    <div class="relative w-full max-w-xs">
+      <img id="sliderMiri" src="./2.jpg" alt="Dibujo para Miri" class="w-full rounded-md shadow-md cursor-pointer zoomable" data-image="ruta/a/imagen-miri1.jpg">
+      <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
+        PARA MIRI
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Modal para ver imagen grande -->
+<div id="modalZoom" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center">
+  <img id="zoomedImg" src="" class="max-w-full max-h-full object-contain transition-transform duration-300 ease-in-out" />
+</div>
 </body>
 </html>
