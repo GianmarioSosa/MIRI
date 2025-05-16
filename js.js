@@ -13,26 +13,49 @@ overlay.addEventListener("click", () => {
   overlay.classList.add("hidden");
 });
 
-// Slider logic
+// Variables
 const slider = document.getElementById("slider");
 const prev = document.getElementById("prev");
 const next = document.getElementById("next");
 let index = 0;
 const slides = slider.children.length;
+let slideInterval;
 
+// Función para actualizar el slider
 function updateSlider() {
   slider.style.transform = `translateX(-${index * 100}%)`;
 }
 
+// Función para iniciar el cambio automático de imágenes
+function startAutoSlide() {
+  slideInterval = setInterval(() => {
+    index = (index + 1) % slides;
+    updateSlider();
+  }, 10000); // 10 segundos
+}
+
+// Función para detener el cambio automático de imágenes
+function stopAutoSlide() {
+  clearInterval(slideInterval);
+}
+
+// Eventos de los botones de navegación manual
 prev.addEventListener("click", () => {
+  stopAutoSlide();
   index = (index - 1 + slides) % slides;
   updateSlider();
+  startAutoSlide();
 });
 
 next.addEventListener("click", () => {
+  stopAutoSlide();
   index = (index + 1) % slides;
   updateSlider();
+  startAutoSlide();
 });
+
+// Iniciar el cambio automático al cargar la página
+window.addEventListener("load", startAutoSlide);
 
 // Contador con fecha de inicio 3 marzo 2025, 14:54 (2:54 pm)
 const fechaInicio = new Date("2025-03-03T14:54:00");
