@@ -1,199 +1,1088 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MIRI Y GIAN</title>
+  <title>Recuerdos</title>
+  <!-- Fonts - Playfair Display (Serif) + Lato (Sans-serif) for harmony -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&amp;family=Playfair+Display:ital,wght@0,700;1,400&amp;display=swap"
+    rel="stylesheet"
+  />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Jomolhari&display=swap" rel="stylesheet" />
-  <script src="./js.js" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#faf6f0',
+            beige: '#d6c9b8',
+            softgray: '#8b8a86',
+            lightbrown: '#c4b8a8',
+            darkbrown: '#5a4a3f',
+            offwhite: '#f5f1eb',
+            warmgray: '#a69f94',
+            mediumbrown: '#9a8f80',
+            shadowgray: 'rgba(90, 74, 63, 0.15)',
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'serif'],
+            sans: ['Lato', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 6px 15px var(--tw-shadow-color)',
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.8s ease forwards',
+            'slide-up': 'slideUp 0.6s ease forwards',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(15px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+          },
+        },
+      },
+    };
+  </script>
   <style>
     body {
-      font-family: 'Jomolhari', serif;
+      font-family: 'Playfair Display', serif;
+      background-color: #faf6f0;
+      color: #5a4a3f;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    h1, h2 {
+      font-family: 'Playfair Display', serif;
+    }
+    .font-sans {
+      font-family: 'Lato', sans-serif;
+    }
+    .aspect-9-16 {
+      aspect-ratio: 9 / 16;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 1rem;
+    }
+    .shadow-soft {
+      box-shadow: 0 6px 15px rgba(90, 74, 63, 0.15);
+    }
+    .affirmation-message {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #a69f94;
+      user-select: none;
+      max-width: 280px;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+    .zoomable {
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      width: 240px;
+      height: 320px;
+    }
+    .zoomable:hover {
+      transform: scale(1.05);
+    }
+    #modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    #modal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 1rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+      object-fit: contain;
+    }
+    .fade-on-scroll {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    ul.list-disc.list-inside li {
+      margin-left: 0.5rem;
+    }
+    .song-image {
+      width: 160px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 0.75rem;
+    }
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      opacity: 0.3;
+      pointer-events: none;
     }
   </style>
 </head>
-<body class="bg-[#e0e3e3]">
+<body class="relative min-h-screen flex flex-col bg-cream">
+  <!-- Partículas en el fondo -->
+  <div id="particles-js"></div>
 
-  <!-- Botón del menú (esquina superior izquierda) -->
-  <button id="menu-button" class="fixed top-2 left-4 z-50 p-2 rounded-md bg-gray-100 shadow-md hover:bg-gray-200">
-    ☰
-  </button>
+  <!-- Nav -->
+  <nav class="bg-beige fixed inset-x-0 top-0 z-50 shadow-soft border-b border-lightbrown">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+      <a href="#" class="text-darkbrown font-serif text-2xl font-bold tracking-wide select-text hover:text-mediumbrown transition">
+        Mirannys &amp; Gian
+      </a>
+      <ul
+        id="navMenu"
+        class="hidden md:flex space-x-10 font-sans font-semibold text-mediumbrown uppercase tracking-widest text-sm"
+      >
+        <li><a href="#album" class="hover:text-darkbrown transition">Álbum</a></li>
+        <li><a href="#dibujos" class="hover:text-darkbrown transition">Dibujos</a></li>
+        <li><a href="#flores" class="hover:text-darkbrown transition">Flores</a></li>
+        <li><a href="#regalos" class="hover:text-darkbrown transition">Regalos</a></li>
+        <li><a href="#canciones" class="hover:text-darkbrown transition">Canciones</a></li>
+        <li><a href="#citas" class="hover:text-darkbrown transition">Citas</a></li>
+        <li><a href="#cartas" class="hover:text-darkbrown transition">Cartas</a></li>
+        <li><a href="#razones" class="hover:text-darkbrown transition">Razones</a></li>
+      </ul>
+      <button
+        id="menuBtn"
+        class="md:hidden flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-mediumbrown rounded"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <svg
+          class="w-7 h-7 text-mediumbrown"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          viewBox="0 0 24 24"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+    </div>
 
-<!-- Sidebar navbar oculto -->
-<div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-md transform -translate-x-full transition-transform duration-300 z-40">
-  <div class="p-4 border-b text-lg font-semibold text-center">Menú</div>
-  <nav class="flex flex-col p-4 space-y-4">
-    <a href="fotos.html" class="hover:underline">Fotos de nosotros</a>
-    <a href="citas.html" class="hover:underline">C...</a>
-    <a href="cartas.html" class="hover:underline">C...</a>
-    <a href="canciones.html" class="hover:underline">C..</a>
-    <a href="teamo.html" class="strocke hover:underline">T...</a>
+    <div
+      id="mobileMenu"
+      class="hidden bg-cream px-6 pb-6 border-t border-lightbrown md:hidden font-sans font-semibold tracking-widest uppercase text-darkbrown/90 text-center space-y-4"
+    >
+      <a href="#album" class="block py-2 hover:text-darkbrown transition">Álbum</a>
+      <a href="#dibujos" class="block py-2 hover:text-darkbrown transition">Dibujos</a>
+      <a href="#flores" class="block py-2 hover:text-darkbrown transition">Flores</a>
+      <a href="#regalos" class="block py-2 hover:text-darkbrown transition">Regalos</a>
+      <a href="#canciones" class="block py-2 hover:text-darkbrown transition">Canciones</a>
+      <a href="#citas" class="block py-2 hover:text-darkbrown transition">Citas</a>
+      <a href="#cartas" class="block py-2 hover:text-darkbrown transition">Cartas</a>
+      <a href="#razones" class="block py-2 hover:text-darkbrown transition">Razones</a>
+    </div>
   </nav>
-</div>
 
-  <!-- Overlay -->
-  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-30"></div>
+  <main class="flex-grow pt-24 pb-12 max-w-5xl mx-auto space-y-32 px-5 font-serif select-none">
 
-  <!-- Encabezado -->
-  <header class="pt-2 text-center" role="banner">
-    <h1 class="text-L font-semibold underline decoration-2">MIRI Y GIAN</h1>
-  </header>
-
-  <!-- Slider de imágenes -->
-  <section class="relative mt-7 flex justify-center">
-    <div class="overflow-hidden aspect-[9/18] w-full max-w-[calc(100%-60px)] max-h-[600px] rounded-[10px]">
-      <div id="slider" class="flex transition-transform duration-500 ease-in-out w-full h-full">
-
-        <div class="relative flex-shrink-0 w-full h-full">
-          <img src="./WhatsApp Image 2025-05-02 at 11.15.55 AM (2).jpeg" alt="Image 1" class="w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-black opacity-50 rounded-[10px]"></div>
+    <!-- Countdown header -->
+    <header class="text-center space-y-3 max-w-lg mx-auto">
+      <h1 class="text-5xl font-bold text-darkbrown tracking-wide select-text drop-shadow-[0_2px_5px_rgba(150,125,100,0.2)]">
+        Mirannys &amp; Gian
+      </h1>
+      <p class="text-mediumbrown italic text-lg select-text">
+       Juntos desde <strong>3 Marzo 2025 2:54 pm</strong>
+      </p>
+      <div
+        id="countdown"
+        class="inline-flex gap-10 rounded-xl bg-beige shadow-soft py-6 px-12 justify-center w-full max-w-md mx-auto text-center"
+      >
+        <div>
+          <div id="days" class="text-6xl font-semibold text-darkbrown">0</div>
+          <div class="uppercase text-xs font-semibold text-mediumbrown tracking-wide select-none">DÍAS</div>
         </div>
-
-        <div class="relative flex-shrink-0 w-full h-full">
-          <img src="./WhatsApp Image 2025-04-28 at 12.38.54 AM.jpeg" alt="Image 2" class="w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-black opacity-40 rounded-[10px]"></div>
+        <div>
+          <div id="hours" class="text-6xl font-semibold text-darkbrown">00</div>
+          <div class="uppercase text-xs font-semibold text-mediumbrown tracking-wide select-none">HORAS</div>
         </div>
-
-        <div class="relative flex-shrink-0 w-full h-full">
-          <img src="./WhatsApp Image 2025-05-02 at 11.15.55 AM (3).jpeg" alt="Image 3" class="w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-black opacity-40 rounded-[10px]"></div>
+        <div>
+          <div id="minutes" class="text-6xl font-semibold text-darkbrown">00</div>
+          <div class="uppercase text-xs font-semibold text-mediumbrown tracking-wide select-none">MINUTOS</div>
         </div>
-
-        <div class="relative flex-shrink-0 w-full h-full">
-          <img src="./WhatsApp Image 2025-05-07 at 12.50.40 AM (1).jpeg" alt="Image 4" class="w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-black opacity-40 rounded-[10px]"></div>
-        </div>
-
-        <div class="relative flex-shrink-0 w-full h-full">
-          <img src="./WhatsApp Image 2025-05-15 at 10.25.03 PM.jpeg" alt="Image 5" class="w-full h-full object-cover" />
-          <div class="absolute inset-0 bg-black opacity-40 rounded-[10px]"></div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Botones del slider -->
-    <button id="prev" class="absolute left-[40px] top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">❮</button>
-    <button id="next" class="absolute right-[40px] top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow">❯</button>
-  </section>
-
-  <!-- Contador -->
-  <section id="contador-section" class="mt-20 text-center">
-    <h2 class="text-[15px] font-semibold mb-4">TIEMPO JUNTOS</h2>
-    <div id="contador" class="flex justify-center gap-5 text-center text-xl font-bold max-w-md mx-auto">
-      <div class="flex flex-col items-center justify-center">
-        <div id="dias" class="text-4xl">0</div>
-        <div class="text-base font-normal">DÍAS</div>
-      </div>
-      <div class="flex flex-col items-center justify-center">
-        <div id="horas" class="text-4xl">0</div>
-        <div class="text-base font-normal">HORAS</div>
-      </div>
-      <div class="flex flex-col items-center justify-center">
-        <div id="minutos" class="text-4xl">0</div>
-        <div class="text-base font-normal">MINUTOS</div>
-      </div>
-      <div class="flex flex-col items-center justify-center">
-        <div id="segundos" class="text-4xl">0</div>
-        <div class="text-base font-normal">SEGUNDOS</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Dibujitos -->
-  <section class="mt-20 text-center">
-    <h2 class="text-[20px] font-semibold mb-6 underline">DIBUJITOS</h2>
-
-    <div class="flex flex-col items-center gap-[70px]">
-      <div class="relative w-full max-w-xs">
-        <img src="./Competencias para el Aprendizaje del Inglés (1).jpg" alt="Dibujo para Gian" class="w-full rounded-md shadow-md cursor-pointer zoomable">
-        <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
-          PARA GIAN
+        <div>
+          <div id="seconds" class="text-6xl font-semibold text-darkbrown">00</div>
+          <div class="uppercase text-xs font-semibold text-mediumbrown tracking-wide select-none">SEGUNDOS</div>
         </div>
       </div>
+    </header>
 
-      <div class="relative w-full max-w-xs">
-        <img id="sliderMiri" src="./2.jpg" alt="Dibujo para Miri" class="w-full rounded-md shadow-md cursor-pointer zoomable">
-        <div class="absolute bottom-1 left-2 text-[9px] text-white bg-black bg-opacity-50 px-2 py-0.5 rounded">
-          PARA MIRI
+    <!-- Affirmation Message 1 top left -->
+    <p
+      class="affirmation-message absolute top-24 left-6 opacity-70 hidden lg:block max-w-xs animate-fade-in select-text"
+      style="z-index: 5"
+    >
+      El amor verdadero se mide en momentos compartidos.
+    </p>
+
+    <!-- Album slider 9:16 -->
+    <section
+      id="album"
+      class="animate-fade-in max-w-4xl mx-auto shadow-soft rounded-3xl bg-cream p-6 relative"
+    >
+      <h2 class="text-4xl font-bold text-darkbrown mb-8 text-center tracking-wide select-text">
+        Fotos Nuestras
+      </h2>
+      <div class="relative overflow-hidden rounded-2xl border border-beige shadow-soft-md" style="aspect-ratio: 9 / 16;">
+        <div
+          id="slides"
+          class="flex transition-transform duration-700 ease-in-out will-change-transform h-full rounded-2xl"
+          style="min-width: 100%; height: 100%;"
+        >
+          <img
+            src="./WhatsApp Image 2025-05-02 at 11.15.55 AM (2).jpeg"
+            alt="Recuerdo 1"
+            class="flex-shrink-0 w-full aspect-[9/16] object-cover rounded-2xl"
+            loading="lazy"
+          />
+          <img
+            src="./WhatsApp Image 2025-04-28 at 12.38.54 AM.jpeg"
+            alt="Recuerdo 2"
+            class="flex-shrink-0 w-full aspect-[9/16] object-cover rounded-2xl"
+            loading="lazy"
+          />
+          <img
+            src="./WhatsApp Image 2025-05-02 at 11.15.55 AM (3).jpeg"
+            alt="Recuerdo 3"
+            class="flex-shrink-0 w-full aspect-[9/16] object-cover rounded-2xl"
+            loading="lazy"
+          />
+          <img
+            src="./WhatsApp Image 2025-05-07 at 12.50.40 AM (1).jpeg"
+            alt="Recuerdo 4"
+            class="flex-shrink-0 w-full aspect-[9/16] object-cover rounded-2xl"
+            loading="lazy"
+          />
+          <img
+            src="./WhatsApp Image 2025-05-15 at 10.25.03 PM.jpeg"
+            alt="Recuerdo 5"
+            class="flex-shrink-0 w-full aspect-[9/16] object-cover rounded-2xl"
+            loading="lazy"
+          />
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Modal Zoom -->
-  <div id="modalZoom" class="fixed inset-0 z-50 hidden bg-black bg-opacity-80 flex items-center justify-center">
-    <img id="zoomedImg" src="" class="max-w-full max-h-full object-contain transition-transform duration-300 ease-in-out" />
+        <!-- Navigation Arrows -->
+        <button
+          id="prev"
+          aria-label="Anterior"
+          class="absolute top-1/2 left-4 -translate-y-1/2 rounded-full bg-beige bg-opacity-80 shadow p-3 hover:bg-opacity-100 transition text-darkbrown"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-7 h-7"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="3"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          id="next"
+          aria-label="Siguiente"
+          class="absolute top-1/2 right-4 -translate-y-1/2 rounded-full bg-beige bg-opacity-80 shadow p-3 hover:bg-opacity-100 transition text-darkbrown"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-7 h-7"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="3"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+      <p
+        class="pt-5 text-center italic text-mediumbrown text-lg font-sans select-text drop-shadow-[0_1px_2px_rgba(90,74,63,0.3)]"
+      >
+        Cada día a tu lado es un regalo.
+      </p>
+    </section>
+
+    <!-- Affirmation Message 2 near album bottom right -->
+    <p
+      class="affirmation-message absolute bottom-[22rem] right-10 opacity-70 hidden lg:block max-w-xs animate-fade-in font-serif cursor-default select-text"
+      style="z-index: 4"
+    >
+      Los recuerdos son los pétalos que nunca se marchitan.
+    </p>
+
+    <!-- Dibujos -->
+    <section
+      id="dibujos"
+      class="max-w-4xl mx-auto rounded-3xl bg-cream p-8 shadow-soft font-sans animate-slide-up relative"
+      aria-label="Dibujos"
+    >
+      <h2 class="text-4xl font-bold text-darkbrown mb-8 text-center tracking-wide select-text font-serif">
+        Dibujitos
+      </h2>
+      <div class="flex justify-center gap-12 flex-wrap select-none">
+        <img
+          id="dibujoElla"
+          src="./Competencias para el Aprendizaje del Inglés (1).jpg"
+          alt="Dibujo de ella"
+          class="max-w-[220px] rounded-xl shadow-soft border-4 border-beige hover:border-darkbrown transition cursor-pointer zoomable"
+          title="Dibujo que ella me hizo"
+          loading="lazy"
+        />
+        <img
+          id="dibujo1"
+          src="./2.jpg"
+          alt="Dibujo mío 1"
+          class="max-w-[220px] rounded-xl border-4 border-beige shadow-soft zoomable cursor-pointer"
+          title="Mi dibujo 1"
+          loading="lazy"
+          onclick="cambiarDibujo('dibujo2')"
+        />
+        <img
+          id="dibujo2"
+          src="./3.jpg"
+          alt="Dibujo mío 2"
+          class="max-w-[220px] rounded-xl border-4 border-beige shadow-soft hidden zoomable cursor-pointer"
+          title="Mi dibujo 2 (visible al hacer click)"
+          loading="lazy"
+          onclick="cambiarDibujo('dibujo1')"
+        />
+      </div>
+    </section>
+
+    <!-- Affirmation Message 3 among drawings, top left corner -->
+    <p
+      class="affirmation-message absolute left-12 top-[calc(50vh+4rem)] opacity-75 hidden lg:block max-w-xs animate-slide-up font-serif cursor-default"
+      style="z-index: 3"
+    >
+      El arte fortalece nuestro amor, capturando nuestra esencia.
+    </p>
+
+    <!-- Flores -->
+    <section
+      id="flores"
+      class="max-w-5xl mx-auto rounded-3xl bg-cream p-8 shadow-soft font-sans select-none relative"
+      aria-label="Flores que te he dado"
+    >
+      <h2 class="text-4xl font-bold text-darkbrown mb-8 text-center tracking-wide font-serif select-text">
+        Flores 
+      </h2>
+      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <img
+          src="./WhatsApp Image 2025-05-15 at 10.05.40 PM.jpeg"
+          alt="Flor 1"
+          class="zoomable rounded-2xl border border-beige shadow-soft object-cover"
+          loading="lazy"
+          title="Flor 1"
+          onclick="openModal(this)"
+        />
+        <img
+          src="./WhatsApp Image 2025-05-15 at 10.10.38 PM.jpeg"
+          alt="Flor 2"
+          class="zoomable rounded-2xl border border-beige shadow-soft object-cover"
+          loading="lazy"
+          title="Flor 2"
+          onclick="openModal(this)"
+        />
+        <img
+          src="./WhatsApp Image 2025-05-15 at 10.06.02 PM.jpeg"
+          alt="Flor 3"
+          class="zoomable rounded-2xl border border-beige shadow-soft object-cover"
+          loading="lazy"
+          title="Flor 3"
+          onclick="openModal(this)"
+        />
+      </div>
+      <p
+        class="pt-6 text-center italic text-mediumbrown font-serif select-text drop-shadow-md"
+      >
+        Las flores son solo el reflejo de mi amor eterno para ti.
+      </p>
+    </section>
+
+    <!-- Affirmation message 4 near flowers bottom right -->
+    <p
+      class="affirmation-message absolute right-12 bottom-[calc(40vh+4rem)] opacity-75 hidden lg:block max-w-xs animate-fade-in font-serif cursor-default"
+      style="z-index: 3"
+    >
+      Cada flor lleva un suspiro de amor profundo hacia ti.
+    </p>
+
+    <!-- Regalos -->
+    <section
+      id="regalos"
+      class="max-w-4xl mx-auto rounded-3xl bg-cream p-8 shadow-soft font-sans animate-slide-up select-none relative"
+      aria-label="Regalos que me diste"
+    >
+      <h2 class="text-4xl font-bold text-darkbrown mb-6 text-center tracking-wide font-serif select-text">
+        Regalos que me diste
+      </h2>
+      <div class="grid grid-cols-2 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <img
+          src="./WhatsApp Image 2025-05-15 at 10.36.47 PM.jpeg"
+          alt="Regalo 1"
+          class="zoomable rounded-2xl border border-beige shadow-soft object-cover"
+          loading="lazy"
+          title="Regalo 1"
+          onclick="openModal(this)"
+        />
+        <img
+          src="./WhatsApp Image 2025-05-15 at 10.32.20 PM.jpeg"
+          alt="Regalo 2"
+          class="zoomable rounded-2xl border border-beige shadow-soft object-cover"
+          loading="lazy"
+          title="Regalo 2"
+          onclick="openModal(this)"
+        />
+      </div>
+    </section>
+
+    <!-- Canciones -->
+    <section
+      id="canciones"
+      class="max-w-5xl mx-auto rounded-3xl bg-cream p-10 shadow-soft font-sans animate-fade-in select-none"
+      aria-label="Canciones especiales"
+    >
+      <h2 class="text-4xl font-bold text-darkbrown mb-10 text-center tracking-wide font-serif select-text">
+        Canciones especiales
+      </h2>
+      <p
+        class="text-center mb-8 italic text-mediumbrown select-text font-serif"
+      >
+        Canciones que me hacen pensar en ti.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto" id="songs-container">
+        <!-- Song cards will be loaded here -->
+      </div>
+    </section>
+
+    <!-- Affirmation Message 5 bottom left -->
+    <p
+      class="affirmation-message absolute left-8 bottom-[10vh] max-w-xs opacity-70 hidden lg:block animate-fade-in font-serif cursor-default select-text"
+      style="z-index: 5"
+    >
+      Nuestro amor es un viaje sin final, lleno de magia y ternura.
+    </p>
+
+    <!-- Ideas para citas -->
+    <section
+      id="citas"
+      class="max-w-4xl mx-auto rounded-3xl bg-cream p-10 shadow-soft font-sans animate-slide-up select-none"
+    >
+      <h2
+        class="text-4xl font-bold text-darkbrown mb-8 text-center tracking-wide font-serif select-text"
+      >
+        Ideas para Citas
+      </h2>
+      <button
+        id="toggleCitasBtn"
+        aria-expanded="false"
+        aria-controls="listaCitas"
+        class="mx-auto block bg-darkbrown text-cream font-semibold py-3 px-8 rounded-3xl shadow hover:bg-mediumbrown transition focus:outline-none focus:ring-4 focus:ring-darkbrown tracking-wide select-text"
+      >
+        Mostrar Ideas
+      </button>
+<ul id="listaCitas" class="mt-8 max-h-80 overflow-auto rounded-xl border border-beige shadow-soft bg-beige p-8 space-y-3 hidden font-semibold text-darkbrown list-disc list-inside">
+    <li>Picnic.</li>
+    <li>Paseo en bicicleta.</li>
+    <li>Cocinar juntos.</li>
+    <li>Noche de cine en casa.</li>
+    <li>Escapada de fin de semana.</li>
+    <li>Cena en un restaurante.</li>
+    <li>Jugar juegos de mesa.</li>
+    <li>Caminata en la naturaleza.</li>
+    <li>Ir a un concierto.</li>
+    <li>Enseñarme a bailar.</li>
+    <li>Visitar un zoológico.</li>
+    <li>Noche de videojuegos.</li>
+    <li>Noche de karaoke.</li>
+    <li>Visitar un parque de atracciones.</li>
+    <li>Taller de arte.</li>
+    <li>Ver el atardecer.</li>
+    <li>Ir a una cafetería.</li>
+    <li>Noche de trivia muejeje.</li>
+    <li>Visitar un museo.</li>
+    <li>Plantar flores juntos.</li>
+    <li>Noche de postres en casa.</li>
+    <li>Tarde de manualidades.</li>
+    <li>Cine.</li>
+    <li>Casarnos</li>
+</ul>
+    </section>
+
+    <!-- Cartas -->
+    <section
+      id="cartas"
+      class="max-w-3xl mx-auto rounded-3xl bg-cream p-10 shadow-soft font-sans animate-fade-in select-none"
+    >
+      <h2
+        class="text-4xl font-bold text-darkbrown mb-8 text-center tracking-wide font-serif select-text"
+      >
+        Mensajitos con mucho amor
+      </h2>
+      <p
+        class="text-center text-mediumbrown mb-10 italic select-text font-serif"
+      >
+        Haz click en una mensaje para leer su contenido
+      </p>
+      <div class="space-y-8 max-w-xl mx-auto">
+        <div
+          class="cursor-pointer border border-beige rounded-3xl p-6 bg-beige shadow hover:bg-lightbrown transition font-semibold text-darkbrown text-xl select-text"
+          onclick="toggleCarta('carta1')"
+          role="button"
+          aria-expanded="false"
+          aria-controls="carta1"
+          tabindex="0"
+        >
+          El día que te conocí
+        </div>
+        <div
+          id="carta1"
+          class="hidden mt-3 rounded-2xl bg-lightbrown p-6 shadow text-cream font-sans text-lg select-text max-h-48 overflow-y-auto"
+        >
+        <p class="mb-3">Mi amor,</p>
+  <p class="mb-3">Recuerdo perfectamente el día que nuestros caminos se cruzaron. No sabía entonces que ese momento cambiaría mi vida para siempre.</p>
+  <p class="mb-3">Tus ojos brillaban con una luz especial, y aunque al principio no me atrevía a admitirlo, supe desde ese instante que eras diferente.</p>
+  <p class="mb-3">Hoy, cada mañana al despertar, doy gracias por ese día en que el universo decidió unirnos. Eres el regalo más hermoso que la vida me ha dado.</p>
+  <p class="mt-4 font-serif italic">Con todo mi amor,<br>Gian</p>
+        </div>
+
+        <div
+          class="cursor-pointer border border-beige rounded-3xl p-6 bg-beige shadow hover:bg-lightbrown transition font-semibold text-darkbrown text-xl select-text"
+          onclick="toggleCarta('carta2')"
+          role="button"
+          aria-expanded="false"
+          aria-controls="carta2"
+          tabindex="0"
+        >
+            Te amo por
+        </div>
+        <div
+          id="carta2"
+          class="hidden mt-3 rounded-2xl bg-lightbrown p-6 shadow text-cream font-sans text-lg select-text max-h-48 overflow-y-auto"
+        >
+            <p class="mb-3">Querida Mirannys,</p>
+  <p class="mb-3">Te amo por la forma en que iluminas mis días grises con solo sonreír. Por cómo me haces sentir que soy la persona más importante del mundo cuando me miras.</p>
+  <p class="mb-3">Te amo por tu risa contagiosa, por tu corazón generoso y por tu paciencia infinita. Por cómo sabes exactamente qué decir cuando más lo necesito.</p>
+  <p class="mb-3">Pero sobre todo, te amo por ser tú. Auténtica, maravillosa y perfecta en tu propia y única manera. No hay un solo día que pase sin que agradezca tenerte en mi vida.</p>
+  <p class="mt-4 font-serif italic">Eternamente tuyo,<br>Gian</p>
+        </div>
+
+        <div
+          class="cursor-pointer border border-beige rounded-3xl p-6 bg-beige shadow hover:bg-lightbrown transition font-semibold text-darkbrown text-xl select-text"
+          onclick="toggleCarta('carta3')"
+          role="button"
+          aria-expanded="false"
+          aria-controls="carta3"
+          tabindex="0"
+        >
+          Nuestro futuro juntos
+        </div>
+        <div
+          id="carta3"
+          class="hidden mt-3 rounded-2xl bg-lightbrown p-6 shadow text-cream font-sans text-lg select-text max-h-48 overflow-y-auto"
+        >
+            <p class="mb-3">Mi vida,</p>
+  <p class="mb-3">Cuando pienso en el futuro, solo puedo imaginarte a mi lado. Sueño con las mañanas despertando junto a ti, con los atardeceres que compartiremos y con todas las aventuras que nos esperan.</p>
+  <p class="mb-3">Prometo construir contigo un hogar lleno de amor, risas y comprensión. Un lugar donde siempre te sientas segura, amada y valorada.</p>
+  <p class="mb-3">No importa lo que el destino nos depare, sé que juntos podemos superar cualquier obstáculo. Porque nuestro amor es el tipo de amor del que se escriben historias.</p>
+  <p class="mt-4 font-serif italic">Hasta el fin de los tiempos,<br>Gian el Inquisidor</p>
+      </div>
+    </section>
+
+    <!-- Razones -->
+    <section
+      id="razones"
+      class="max-w-4xl mx-auto rounded-3xl bg-cream p-10 shadow-soft font-sans animate-slide-up select-none"
+    >
+      <h2
+        class="text-4xl font-bold text-darkbrown mb-8 text-center tracking-wide font-serif select-text"
+      >
+        Razones por las que te amo
+      </h2>
+      <button
+        id="toggleRazonesBtn"
+        aria-expanded="false"
+        aria-controls="listaRazones"
+        class="mx-auto block bg-darkbrown text-cream font-semibold py-3 px-8 rounded-3xl shadow hover:bg-mediumbrown transition focus:outline-none focus:ring-4 focus:ring-darkbrown tracking-wide select-text"
+      >
+        Mostrar Razones
+      </button>
+<ul id="listaRazones" class="mt-8 max-h-80 overflow-auto rounded-xl border border-beige shadow-soft bg-beige p-8 space-y-2 hidden font-semibold text-darkbrown list-disc list-inside">
+    <li>Porque me haces sentir especial con solo estar a tu lado.</li>
+    <li>Porque solo puedo verte a ti cuando cierro los ojos y solo quiero verte a ti al abrirlos.</li>
+    <li>Por desbordar mi vida, mi día a día con tu amor.</li>
+    <li>Por ser única y mía.</li>
+    <li>Porque eres la niña con la que quisiera compartir el resto de mi vida.</li>
+    <li>Por hacerme feliz cada día.</li>
+    <li>Por tu forma de ser y de amar.</li>
+    <li>Por quererme como soy.</li>
+    <li>Por animarme cuando estoy mal.</li>
+    <li>Porque simplemente eres PERFECTA.</li>
+    <li>Porque sabes más que yo de mí misma.</li>
+    <li>Por las tardes que hemos pasado juntas.</li>
+    <li>Porque no imagino una vida sin ti.</li>
+    <li>Por conocer cada detalle de mí.</li>
+    <li>Por hacerme conocer lo que es el AMOR.</li>
+    <li>Porque no cuento las horas contigo porque sé que será para siempre.</li>
+    <li>Porque solo con decirme te quiero consigues de mí lo que sea.</li>
+    <li>Por tener esa risa que quiero escuchar cada día de mi vida.</li>
+    <li>Por sacarme una sonrisa siempre.</li>
+    <li>Porque sonríes siempre que me ves.</li>
+    <li>Por dejarme ser yo misma en todo momento.</li>
+    <li>Por la forma en que ríes de tus propias bromas.</li>
+    <li>Por esos ojos llenos de esperanza.</li>
+    <li>Por cómo dices que me amas.</li>
+    <li>Por la forma en que me acaricias.</li>
+    <li>Por hacerme reír cuando mi ánimo está por el suelo y mis días son grises.</li>
+    <li>Por mostrarme partes de mí que desconocía.</li>
+    <li>Por ser tan cariñosa los días que lo merezco y los que no.</li>
+    <li>Por estar siempre que te necesito.</li>
+    <li>Por ser esa alguien en quien siempre puedo confiar.</li>
+    <li>Por tus besos que me vuelven loca.</li>
+    <li>Por ser tan detallista.</li>
+    <li>Por saber exactamente qué siento.</li>
+    <li>Por ser la alegría que me anima a despertarme cada mañana.</li>
+    <li>Por no temerle al compromiso.</li>
+    <li>Por todos los momentos compartidos y los que aún faltan por compartir.</li>
+    <li>Por secar ayer y hoy todas las lágrimas que derramé.</li>
+    <li>Por preocuparte por mí siempre.</li>
+    <li>Por ser la persona que más feliz me ha hecho en mucho tiempo.</li>
+    <li>Porque cuando estoy contigo me siento completa.</li>
+    <li>Por darle detalles a todo lo que hacemos.</li>
+    <li>Por sacarme de la soledad que tanto tiempo me ha perseguido.</li>
+    <li>Porque te lo mereces.</li>
+    <li>Por confiarme tus secretos y guardar los míos.</li>
+    <li>Por ayudarme a levantarme cada vez que me he caído.</li>
+    <li>Por llenar mi vida de alegrías e ilusiones.</li>
+    <li>Por todas las palabras que me has dejado en el corazón.</li>
+    <li>Por tener la habilidad de hacerme feliz sin trampas ni consecuencias.</li>
+    <li>Por dejarme expresar todo lo que siento y quiero.</li>
+    <li>Porque eres la cura para todas mis heridas.</li>
+    <li>Por abrir tu corazón y tu vida y compartirlos conmigo, mi amor.</li>
+    <li>Por cómo dices te amo.</li>
+    <li>Por apoyarme y ayudarme cada día.</li>
+    <li>Por encontrar la palabra precisa en el momento indicado.</li>
+    <li>Por hacer que se desborden mis ganas de vivir y compartir la vida contigo.</li>
+            <li>Por tener las palabras justas para hacerme fuerte o para levantarme en las caídas.</li>
+        <li>Por cómo arriesgas todo por mí.</li>
+        <li>Por todas tus virtudes, y tus defectos cuando los encuentre, porque para mí eres perfecta.</li>
+        <li>Por ser lo primero que pienso al despertar y lo último que recuerdo haber soñado.</li>
+        <li>Porque no soy nada sin ti.</li>
+        <li>Porque te quiero tanto que me cuesta explicarte lo que siento.</li>
+        <li>Porque no quiero que me olvides nunca porque yo no te olvidaré.</li>
+        <li>Porque eres lo más importante de mi vida.</li>
+        <li>Porque sin ti mi vida no tendría sentido.</li>
+        <li>Porque eres mi mundo.</li>
+        <li>Porque ya no tengo ojos para otra persona que no seas tú.</li>
+        <li>Porque cuando te conocí fue el día más feliz de mi vida.</li>
+        <li>Porque mi corazón lo siente y lo sabe que tú eres mi vida y sin ti no puedo vivir.</li>
+        <li>Porque descubrí algo que nunca había sentido y esa cosa tan rara que sentí ahora sé que tiene una palabra... esa palabra es... AMOR.</li>
+        <li>Por pensar en mí.</li>
+        <li>Por hacerme sentir tan inmensamente feliz estando juntas y sin estarlo.</li>
+        <li>Por estar ahí en los momentos malos y en los buenos.</li>
+        <li>Por hacerme sentir que el tiempo a tu lado es muy corto aunque hayan pasado mil horas.</li>
+        <li>Por alegrarme todos los días.</li>
+        <li>Por enseñarme algo nuevo cada vez que nos vemos.</li>
+        <li>Por las cosas que me dices.</li>
+        <li>Por ser mi amiga, mi amante, mi novia, mi compañera, mi TODO.</li>
+        <li>Por hacerme ser como soy.</li>
+        <li>Por amarme como me amas.</li>
+        <li>Porque cuando me abrazas me haces sentir única.</li>
+        <li>Por ser mi sol en medio de la tormenta.</li>
+        <li>Porque eres especial y única en todo lo que haces.</li>
+        <li>Solo por existir.</li>
+        <li>Porque me haces sentir especial con solo acariciarme.</li>
+        <li>Por ser lo único que necesito para ser feliz.</li>
+        <li>Porque me derrito cada vez que me hablas.</li>
+        <li>Por tus sorpresas.</li>
+        <li>Por la forma en que me miras.</li>
+        <li>Porque eres capaz de sacar lo mejor de mí.</li>
+        <li>Porque cuando me faltan me das las fuerzas para seguir adelante.</li>
+        <li>Por dejarme escoger a dónde ir, qué hacer...</li>
+        <li>Por amarme sobre todas las cosas.</li>
+        <li>Porque eres la primera para mí en todo.</li>
+        <li>Por darme ánimos y fuerzas para conseguir mis metas.</li>
+        <li>Por hacerme sentir que soy la única chica de tu vida.</li>
+        <li>Porque solo contigo me siento capaz de todo.</li>
+        <li>Por todos y cada uno de los momentos vividos y por estar a mi lado.</li>
+        <li>Por dejarme soñar.</li>
+        <li>Por no olvidarte de mí.</li>
+        <li>Porque cada día tengo un motivo más para amarte.</li>
+</ul>
+    </section>
+
+  </main>
+
+  <!-- Modal for zoom -->
+  <div id="modal" aria-modal="true" role="dialog" tabindex="-1" aria-hidden="true">
+    <img id="modalImg" src="" alt="Imagen ampliada" />
   </div>
 
-  <!-- Mensaje de amor -->
-  <section class="mt-20 mb-6 px-6 text-center">
-    <div class="max-w-xl mx-auto bg-gray-100 rounded-xl p-6 shadow-md">
-      <h2 class="text-2xl font-semibold mb-4 text-red-600">Mensaje Para Miri 💖</h2>
-      <p class="text-lg font-medium text-gray-800 leading-relaxed">
-        Desde que llegaste a mi vida, todo tiene más sentido. <br />
-        Eres mi alegría diaria, mi paz y mi inspiración. <br />
-        Gracias por ser tú, por cada sonrisa, por cada momento compartido. <br />
-        Te amo con todo mi corazón, <span class="font-semibold">Miri</span>. <br /><br />
-        — Gian 💖
-      </p>
-    </div>
-  </section>
-  <!-- Nueva sección con 3 imágenes y fechas abajo a la izquierda -->
-  <section class="mt-20 mb-6 max-w-5xl mx-auto px-4">
-    <h2 class="text-center text-[20px] font-semibold mb-6 underline">FLORES </h2>
-    <div class="flex justify-between gap-4">
+  <!-- Script for particles.js -->
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   
-      <div class="relative w-1/3 rounded overflow-hidden shadow-lg cursor-pointer">
-        <img src="./WhatsApp Image 2025-05-15 at 10.05.40 PM.jpeg" alt="Imagen 1" class="w-full h-48 object-cover zoomable" />
-        <div class="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded select-none">
-          03/03/2025
-        </div>
-      </div>
-  
-      <div class="relative w-1/3 rounded overflow-hidden shadow-lg cursor-pointer">
-        <img src="./WhatsApp Image 2025-05-15 at 10.10.38 PM.jpeg" alt="Imagen 2" class="w-full h-48 object-cover zoomable" />
-        <div class="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded select-none">
-          21/03/2025
-        </div>
-      </div>
-  
-      <div class="relative w-1/3 rounded overflow-hidden shadow-lg cursor-pointer">
-        <img src="./WhatsApp Image 2025-05-15 at 10.06.02 PM.jpeg" alt="Imagen 3" class="w-full h-48 object-cover zoomable" />
-        <div class="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded select-none">
-          28/04/2025
-        </div>
-      </div>
-  
-    </div>
-  </section>
-  <section class="mt-14 mb-4 mx-auto px-4">
-    <h2 class="text-center text-[20px] font-semibold mb-6 underline">REGALITOS</h2>
-    <div class="flex justify-center gap-4">
-  
-      <div class="relative w-1/3 rounded overflow-hidden shadow-lg cursor-pointer">
-        <img src="./WhatsApp Image 2025-05-15 at 10.36.47 PM.jpeg" alt="Imagen 4" class="w-full h-60 object-cover zoomable" />
-        <div class="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded select-none">
-          30/03/2025
-        </div>
-      </div>
-  
-      <div class="relative w-1/3 rounded overflow-hidden shadow-lg cursor-pointer bg-black">
-        <img src="./WhatsApp Image 2025-05-15 at 10.32.20 PM.jpeg" alt="Imagen 5" class="w-full h-60 object-cover zoomable opacity-60" />
-        <div class="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded select-none">
-          30/03/2025
-        </div>
-      </div>
-  
-    </div>
-  </section>
-  <section class="mt-20 mb-10 mx-[20px] text-center max-w-xl bg-white bg-opacity-80 rounded-xl p-6 shadow-md">
-    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
-      Hola Miri, esta página aún está en desarrollo.<br/>
-      Poco a poco iré agregando más cositas lindas y detalles.<br/>
-    </p>
-    <p class="text-sm text-gray-500 italic">Página en construcción, vuelve pronto para ver las novedades.</p>
-  </section>
+  <script>
+    // Initialize particles.js
+    document.addEventListener('DOMContentLoaded', function() {
+      particlesJS("particles-js", {
+        "particles": {
+          "number": {
+            "value": 30,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#5a4a3f"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            }
+          },
+          "opacity": {
+            "value": 0.15,
+            "random": true,
+            "anim": {
+              "enable": true,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#a69f94",
+            "opacity": 0.2,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 1,
+            "direction": "none",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          }
+        },
+        "retina_detect": true
+      });
+    });
+
+    // Hamburger menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => {
+      const expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      menuBtn.setAttribute('aria-expanded', !expanded);
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Countdown timer
+    const startDate = new Date('2025-03-03T14:54:00');
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = now - startDate;
+      if (diff < 0) {
+        daysEl.textContent = 0;
+        hoursEl.textContent = '00';
+        minutesEl.textContent = '00';
+        secondsEl.textContent = '00';
+        return;
+      }
+      const totalSeconds = Math.floor(diff / 1000);
+      const days = Math.floor(totalSeconds / (3600 * 24));
+      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      daysEl.textContent = days;
+      hoursEl.textContent = String(hours).padStart(2, '0');
+      minutesEl.textContent = String(minutes).padStart(2, '0');
+      secondsEl.textContent = String(seconds).padStart(2, '0');
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Slider
+    const slides = document.getElementById('slides');
+    const totalSlides = slides.children.length;
+    let currentIndex = 0;
+
+    function showSlide(index) {
+      if (index < 0) index = totalSlides - 1;
+      else if (index >= totalSlides) index = 0;
+      currentIndex = index;
+      slides.style.transform = `translateX(-${index * 100}%)`;
+    }
+    document.getElementById('prev').onclick = () => showSlide(currentIndex - 1);
+    document.getElementById('next').onclick = () => showSlide(currentIndex + 1);
+    showSlide(0);
+
+    // Drawing toggle between dibujo1 and dibujo2 only; dibujoElla stays visible
+    function cambiarDibujo(nextId) {
+      const dibujo1 = document.getElementById('dibujo1');
+      const dibujo2 = document.getElementById('dibujo2');
+      if (nextId === 'dibujo2') {
+        dibujo1.classList.add('hidden');
+        dibujo2.classList.remove('hidden');
+      } else {
+        dibujo2.classList.add('hidden');
+        dibujo1.classList.remove('hidden');
+      }
+    }
+
+    // Toggle cartas
+    function toggleCarta(id) {
+      const carta = document.getElementById(id);
+      carta.classList.toggle('hidden');
+    }
+
+    // Toggle citas
+    const toggleCitasBtn = document.getElementById('toggleCitasBtn');
+    const listaCitas = document.getElementById('listaCitas');
+    toggleCitasBtn.addEventListener('click', () => {
+      const isHidden = listaCitas.classList.contains('hidden');
+      listaCitas.classList.toggle('hidden');
+      toggleCitasBtn.setAttribute('aria-expanded', isHidden);
+      toggleCitasBtn.textContent = isHidden ? 'Ocultar Ideas' : 'Mostrar Ideas';
+    });
+
+    // Toggle razones
+    const toggleRazonesBtn = document.getElementById('toggleRazonesBtn');
+    const listaRazones = document.getElementById('listaRazones');
+    toggleRazonesBtn.addEventListener('click', () => {
+      const isHidden = listaRazones.classList.contains('hidden');
+      listaRazones.classList.toggle('hidden');
+      toggleRazonesBtn.setAttribute('aria-expanded', isHidden);
+      toggleRazonesBtn.textContent = isHidden ? 'Ocultar Razones' : 'Mostrar Razones';
+    });
+
+    // Scroll animations
+    const fadeElements = document.querySelectorAll('.fade-on-scroll');
+    function checkFade() {
+      fadeElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          el.classList.add('visible');
+        }
+      });
+    }
+    window.addEventListener('scroll', checkFade);
+    window.addEventListener('load', checkFade);
+
+    // Modal zoom
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modalImg');
+
+    function openModal(img) {
+      modalImg.src = img.src;
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    modal.addEventListener('click', () => {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      modalImg.src = '';
+      document.body.style.overflow = '';
+    });
+
+    // Add zoom click to all zoomable images
+    document.querySelectorAll('img.zoomable').forEach(img => {
+      img.addEventListener('click', () => openModal(img));
+    });
+
+    // Spotify API integration for album covers
+    const songs = [
+      {
+        title: "SABES UNA COSA",
+        artist: "Luis Miguel",
+        spotifyId: "21Ullb4TU8qMsQd0Iselng",
+        youtubeUrl: "https://www.youtube.com/watch?v=UuGrc3vvdMw"
+      },
+      {
+        title: "SI NOS DEJAN",
+        artist: "Luis Miguel",
+        spotifyId: "7nAvryV9PVCt9PQGPx7I0z",
+        youtubeUrl: "https://www.youtube.com/watch?v=qQZvCgoaj7o"
+      },
+      {
+        title: "PARA SIEMPRE",
+        artist: "Vicente Fernández",
+        spotifyId: "0uyVgmoXDbwS1ubv8AurVZ",
+        youtubeUrl: "https://www.youtube.com/watch?v=zDBxF-7r4Ag"
+      },
+      {
+        title: "UN MILLÓN DE PRIMAVERAS",
+        artist: "Vicente Fernández",
+        spotifyId: "ef9c5a4bee1f4656",
+        youtubeUrl: "https://www.youtube.com/watch?v=M3CbRJ6jgQc"
+      },
+      {
+        title: "TE LO PIDO POR FAVOR",
+        artist: "Juan Gabriel",
+        spotifyId: "08Jr52g99jcHUYx9NhU0IE",
+        youtubeUrl: "https://www.youtube.com/watch?v=HQhzzU9uysM"
+      },
+      {
+        title: "CONTIGO",
+        artist: "Los Panchos",
+        spotifyId: "0RayTAbupCL4o2F54f9tCP",
+        youtubeUrl: "https://www.youtube.com/watch?v=jhx3hYS__JI"
+      },
+      {
+        title: "MOTIVOS",
+        artist: "Luis Miguel",
+        spotifyId: "44AyOl4qVkzS48vBsbNXaC",
+        youtubeUrl: "https://www.youtube.com/watch?v=UejnB9xCAAM"
+      },
+      {
+        title: "BED OF ROSES",
+        artist: "Bon Jovi",
+        spotifyId: "1zng9uqqXoPkmU05nsAlsw",
+        youtubeUrl: "https://www.youtube.com/watch?v=NvR60Wg9R7Q"
+      },
+      {
+        title: "IN THESE ARMS",
+        artist: "Bon Jovi",
+        spotifyId: "0vTKR5TQD03kASmEGlyDF3",
+        youtubeUrl: "https://www.youtube.com/watch?v=59NoqP02ZYM"
+      },
+      {
+        title: "TU JARDIN CON ENANITOS",
+        artist: "Melendi",
+        spotifyId: "6yCjU5j6YHbux2VQCBTTE1",
+        youtubeUrl: "https://www.youtube.com/watch?v=v3-9eDFDAFw"
+      },
+      {
+        title: "ENAMORADO TUYO",
+        artist: "El Cuarteto de Nos",
+        spotifyId: "35LdDKNMwvKftENaj1WIwF",
+        youtubeUrl: "https://www.youtube.com/watch?v=R5cbxTPZNL0"
+      },
+      {
+        title: "CAN'T HELP FALLING IN LOVE",
+        artist: "Elvis Presley",
+        spotifyId: "44AyOl4qVkzS48vBsbNXaC",
+        youtubeUrl: "https://www.youtube.com/watch?v=vGJTaP6anOU"
+      },
+      {
+        title: "MY WAY OF LIFE",
+        artist: "Frank Sinatra",
+        spotifyId: "0Sc8AsDTBeZFWg8K9tMARE",
+        youtubeUrl: "https://www.youtube.com/watch?v=X3r7GD0R56s"
+      }
+    ];
+
+    // Function to create song cards with fallback
+    function createSongCards() {
+      const songsContainer = document.getElementById('songs-container');
+      
+      songs.forEach(song => {
+        const songCard = document.createElement('div');
+        songCard.className = 'song-card rounded-2xl bg-beige shadow-soft p-5 flex flex-col items-center text-center cursor-default hover:shadow-lg transition';
+        songCard.setAttribute('tabindex', '0');
+        songCard.setAttribute('aria-label', `Canción ${song.title} - ${song.artist}`);
+        
+        // Try to get from Spotify API, fallback to placeholder if fails
+        fetch(`https://api.spotify.com/v1/tracks/${song.spotifyId}`)
+          .then(response => response.json())
+          .then(data => {
+            const albumCoverUrl = data.album.images[0].url;
+            songCard.innerHTML = `
+              <img src="${albumCoverUrl}" alt="Portada ${song.title}" loading="lazy" class="song-image mb-5 shadow" />
+              <h3 class="font-semibold text-darkbrown tracking-wide mb-2 font-sans text-lg">${song.title}</h3>
+              <p class="text-mediumbrown mb-4">${song.artist}</p>
+              <div class="flex gap-4 mt-auto">
+                <a href="https://open.spotify.com/track/${song.spotifyId}" target="_blank" rel="noopener" class="bg-darkbrown text-cream font-semibold py-2 px-4 rounded-xl hover:bg-mediumbrown transition focus:outline-none focus:ring-2 focus:ring-darkbrown text-sm">Spotify</a>
+                <a href="${song.youtubeUrl}" target="_blank" rel="noopener" class="bg-darkbrown text-cream font-semibold py-2 px-4 rounded-xl hover:bg-mediumbrown transition focus:outline-none focus:ring-2 focus:ring-darkbrown text-sm">YouTube</a>
+              </div>
+            `;
+          })
+          .catch(error => {
+            console.error(`Error fetching data for ${song.title}:`, error);
+            songCard.innerHTML = `
+              <div class="w-40 h-40 rounded-xl bg-mediumbrown mb-5 flex items-center justify-center text-cream">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                </svg>
+              </div>
+              <h3 class="font-semibold text-darkbrown tracking-wide mb-2 font-sans text-lg">${song.title}</h3>
+              <p class="text-mediumbrown mb-4">${song.artist}</p>
+              <div class="flex gap-4 mt-auto">
+                <a href="https://open.spotify.com/track/${song.spotifyId}" target="_blank" rel="noopener" class="bg-darkbrown text-cream font-semibold py-2 px-4 rounded-xl hover:bg-mediumbrown transition focus:outline-none focus:ring-2 focus:ring-darkbrown text-sm">Spotify</a>
+                <a href="${song.youtubeUrl}" target="_blank" rel="noopener" class="bg-darkbrown text-cream font-semibold py-2 px-4 rounded-xl hover:bg-mediumbrown transition focus:outline-none focus:ring-2 focus:ring-darkbrown text-sm">YouTube</a>
+              </div>
+            `;
+          });
+        
+        songsContainer.appendChild(songCard);
+      });
+    }
+
+    // Call the function when the page loads
+    window.addEventListener('load', createSongCards);
+  </script>
 </body>
 </html>
